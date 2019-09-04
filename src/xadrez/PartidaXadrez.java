@@ -28,10 +28,8 @@ public class PartidaXadrez {
 	public PecaXadrez execultarXadrezMove(PosicaoXadrez posicaoOrigem, PosicaoXadrez posicaoDestino) {
 		Posicao origem = posicaoOrigem.toPosicao();
 		Posicao destino = posicaoDestino.toPosicao();
-		
 		validarPosicaoOrigem(origem);
 		Peca capturaPeca = fazerMove(origem, destino);
-		
 		return (PecaXadrez) capturaPeca;
 	}
 	private Peca fazerMove(Posicao origem, Posicao destino) {
