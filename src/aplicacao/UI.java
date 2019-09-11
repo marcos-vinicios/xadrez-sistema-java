@@ -59,6 +59,9 @@ public class UI {
 		System.out.println();
 		System.out.println("time :" + partidaXadrez.getTime());
 		System.out.println("Proximo jogador: " + partidaXadrez.getJogadorAtual());
+		if(partidaXadrez.getCheck()) {
+			System.out.println("CHECK!");
+		}
 	}
 	
 	public static void printTabuleiro(PecaXadrez[][] pecas) {
