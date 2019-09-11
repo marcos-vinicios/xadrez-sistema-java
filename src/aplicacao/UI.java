@@ -58,6 +58,12 @@ public class UI {
 		imprimirCapturarPecas(capturada);
 		System.out.println();
 		System.out.println("time :" + partidaXadrez.getTime());
+		if(!partidaXadrez.getCheckMate()) {
+			System.out.println("CHECK");
+		}else {
+			System.out.println("CHECKMATE");
+			System.out.println("Vencedor: " + partidaXadrez.getJogadorAtual());
+		}
 		System.out.println("Proximo jogador: " + partidaXadrez.getJogadorAtual());
 		if(partidaXadrez.getCheck()) {
 			System.out.println("CHECK!");

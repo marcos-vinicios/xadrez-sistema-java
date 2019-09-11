@@ -17,6 +17,7 @@ public class PartidaXadrez {
 	private Color jogadorAtual;
 	private Tabuleiro tabuleiro;
 	private boolean check;
+	private boolean checkMate;
 	
 	private List<Peca> pecasNoTabuleiro = new ArrayList<>();
 	private List<Peca> capturarPecas = new ArrayList<>();
@@ -38,6 +39,9 @@ public class PartidaXadrez {
 		return check;
 	}
 	
+	public boolean getCheckMate() {
+		return checkMate;
+	}
 	
 	public PecaXadrez[][] getPecas(){
 		PecaXadrez[][] mat = new PecaXadrez[tabuleiro.getLinhas()][tabuleiro.getColunas()];
@@ -67,7 +71,11 @@ public class PartidaXadrez {
 		}
 		
 		check = (testeCheck(oponente(jogadorAtual))) ? true : false;
-				
+		if(testeCheckMate(oponente(jogadorAtual))) {
+			checkMate = true;
+		}else {
+			proximoTime();
+		}
 		proximoTime();
 		return (PecaXadrez) capturaPeca;
 	}
@@ -130,6 +138,31 @@ public class PartidaXadrez {
 		throw new IllegalStateException("Não existe " + color + " o rei no tabuleiro.");
 	}
 	
+	private boolean testeCheckMate(Color color) {
+		if(!testeCheck(color)) {
+			return false;
+		}
+		List<Peca> list = pecasNoTabuleiro.stream().filter(x -> ((PecaXadrez)x).getColor() == color).collect(Collectors.toList());
+		for(Peca p : list) {
+			boolean[][] mat = p.movimentosPossiveis();
+			for(int i=0; i<tabuleiro.getLinhas(); i++) {
+				for( int j=0; j<tabuleiro.getColunas(); j++) {
+					if(mat[i][j]) {
+						Posicao origem = ((PecaXadrez)p).getPosicaoXadrez().toPosicao();
+						Posicao destino = new Posicao(i,j);
+						Peca capturarPeca = fazerMove(origem, destino);
+						boolean testeCheck = testeCheck(color);
+						desfazerMovimento(origem, destino, capturarPeca);
+						if(!testeCheck) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
 	private boolean testeCheck(Color color) {
 		Posicao posicaoRei = rei(color).getPosicaoXadrez().toPosicao();
 		List<Peca> pecasOponente = pecasNoTabuleiro.stream().filter(x -> ((PecaXadrez)x).getColor() == oponente(color)).collect(Collectors.toList());
@@ -149,18 +182,12 @@ public class PartidaXadrez {
 	
 	
 	private void iniciaPartida() {
-		colocarNovaPeca('c', 1, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('c', 2, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('d', 2, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('e', 2, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('e', 1, new Torre(tabuleiro, Color.WHITE));
-		colocarNovaPeca('d', 1, new Rei(tabuleiro, Color.WHITE));
+		colocarNovaPeca('h', 7, new Torre(tabuleiro, Color.WHITE));
+		colocarNovaPeca('d', 1, new Torre(tabuleiro, Color.WHITE));
+		colocarNovaPeca('e', 1, new Rei(tabuleiro, Color.WHITE));
+		
 
-		colocarNovaPeca('c', 7, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('c', 8, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('d', 7, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('e', 7, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('e', 8, new Torre(tabuleiro, Color.BLACK));
-		colocarNovaPeca('d', 8, new Rei(tabuleiro, Color.BLACK));
-	}
+		colocarNovaPeca('b', 8, new Torre(tabuleiro, Color.BLACK));
+		colocarNovaPeca('a', 8, new Rei(tabuleiro, Color.BLACK));
+		}
 }
